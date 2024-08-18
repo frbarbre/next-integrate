@@ -20,12 +20,12 @@ First you'll have to create a new project in the [Google Developer Console](http
   authenticate.
 </Callout>
 
-When you have created the project, you'll have to set the redirect URI to `http://localhost:3000/api/auth/integrations/google`. This insures that the OAuth flow will redirect back to your application.
+When you have created the project, you'll have to set the redirect URI to `http://localhost:3000/api/auth/integration/google`. This insures that the OAuth flow will redirect back to your application.
 
 <Callout type="warning" emoji="⚠️">
   If you've set a [custom base path](/docs/guides/configure-custom-basepath),
   you'll have to change the redirect URI to match the new path. Example:
-  `http://localhost:3000/something/api/auth/integrations/google`.
+  `http://localhost:3000/something/api/auth/integration/google`.
 </Callout>
 
 Once you've finished setting up the OAuth application, you'll get a `Client ID` and `Client Secret`. You'll have to save these for the next step.
