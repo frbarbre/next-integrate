@@ -1,0 +1,226 @@
+import Integrate from '@/components/integrate';
+import { Steps, Callout } from 'nextra/components';
+import Image from 'next/image';
+import { buttonVariants } from '@/components/ui/button';
+
+# Making your first integration
+
+After finishing the [Getting Started](./getting-started.mdx) guide, you are now ready to move on. In this guide, i'll will walk you through the process of creating your first integration.
+
+As an example we'll create an integration with Google, where we'll get the user's tokens, and get their user information.
+
+<Steps>
+### Set redirect URI and retrieve Client ID and Client Secret
+
+First you'll have to create a new project in the [Google Developer Console](https://cloud.google.com/), and create a new OAuth application. If you don't know how to do this, you can follow [Google's guide](https://support.google.com/cloud/answer/6158849?hl=en).
+
+<Callout type="info" emoji="ℹ️">
+  You'll have to set yourself as a test user in the OAuth consent screen, to be
+  able to test the OAuth flow. Without this, you'll get an error when trying to
+  authenticate.
+</Callout>
+
+When you have created the project, you'll have to set the redirect URI to `http://localhost:3000/api/auth/integrations/google`. This insures that the OAuth flow will redirect back to your application.
+
+<Callout type="warning" emoji="⚠️">
+  If you've set a [custom base path](/docs/guides/configure-custom-basepath),
+  you'll have to change the redirect URI to match the new path. Example:
+  `http://localhost:3000/something/api/auth/integrations/google`.
+</Callout>
+
+Once you've finished setting up the OAuth application, you'll get a `Client ID` and `Client Secret`. You'll have to save these for the next step.
+
+### Setup `.env` variables
+
+After you've gotten the `Client ID` and `Client Secret`, you'll have to add them to your `.env.local` file:
+
+<Callout emoji="💡">
+  The naming the of the variables is not important. You can name them whatever
+  you want, as long as you use the same names in the next step.
+</Callout>
+
+```env copy filename=".env.local"
+AUTH_GOOGLE_ID=your-client-id
+AUTH_GOOGLE_SECRET=your-client-secret
+```
+
+### Setting up the provider
+
+Now go the the `auth.ts` file you created in the [Getting Started](./getting-started.mdx) guide, and add the following code:
+
+```ts copy filename="auth.ts" {11-16}
+import { NextIntegrate } from 'next-integrate';
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integrations/google
+  base_url: process.env.BASE_URL!,
+  providers: [
+    {
+      provider: 'google',
+      client_id: process.env.AUTH_GOOGLE_ID!,
+      client_secret: process.env.AUTH_GOOGLE_SECRET!,
+      integrations: [],
+    },
+  ],
+});
+```
+
+This will add the Google provider to the `auth` object. The `integrations` array is empty, but we'll add the integrations in the next step.
+
+### Adding an integration
+
+Now we'll add the integrations to the `auth` object. We'll add an integration, we´ll give it a `name`, and set some `scopes` that we want to get from the user. The `options` are different for each provider, so you'll have to check the provider's documentation to see what options are available (see [Google's options](https://developers.google.com/identity/protocols/oauth2/web-server#creatingclient)).
+
+```ts copy filename="auth.ts" {16-24}
+import { NextIntegrate } from 'next-integrate';
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integrations/google
+  base_url: process.env.BASE_URL!,
+  providers: [
+    {
+      provider: 'google',
+      client_id: process.env.AUTH_GOOGLE_ID!,
+      client_secret: process.env.AUTH_GOOGLE_SECRET!,
+      integrations: [
+        {
+          name: 'user_info',
+          options: {
+            scope: 'openid https://www.googleapis.com/auth/userinfo.profile',
+          },
+          callback: async (data) => {
+            // This is where you can save the data to a database, or do something else with it.
+          },
+        },
+      ],
+    },
+  ],
+});
+```
+
+### Using the `callback()` function
+
+After the user has authenticated, the `callback()` function will be called. This is where you can save the data to a database, set a cookie, or do something else with the data.
+
+```ts copy filename="auth.ts" {2, 22-24}
+import { NextIntegrate } from 'next-integrate';
+import { cookies } from 'next/headers';
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integrations/google
+  base_url: process.env.BASE_URL!,
+  providers: [
+    {
+      provider: 'google',
+      client_id: process.env.AUTH_GOOGLE_ID!,
+      client_secret: process.env.AUTH_GOOGLE_SECRET!,
+      integrations: [
+        {
+          name: 'user_info',
+          options: {
+            scope: 'openid https://www.googleapis.com/auth/userinfo.profile',
+          },
+          callback: async (data) => {
+            cookies().set('session', JSON.stringify(data));
+          },
+        },
+      ],
+    },
+  ],
+});
+```
+
+### Make an integration button
+
+Now you can make a button that will trigger the OAuth flow. You can use the `<Integrate />` component to do this (you can find the component in the [Getting Started guide](/docs/getting-started#create-an-integrate-components)).
+
+The `provider` prop is the name of the provider you want to integrate with, and the `name` prop is the name of integration you want the button to trigger, in this case the name will be `user_info`.
+
+<Callout emoji={'💡'}>
+  You can also use the `redirect` props to redirect the user to a specific URL
+  after completing the OAuth flow.
+</Callout>
+
+```tsx copy {1, 6-8}
+import Integrate from '@/components/integrate';
+
+export default function Home() {
+  return (
+    <main>
+      <Integrate provider="google" name="user_info">
+        Get Google User Info
+      </Integrate>
+    </main>
+  );
+}
+```
+
+### Boom you're done!
+
+If you've followed all the steps, you should now have a working integration with Google. This is just the beginning, and you can now start to build your own integrations with the most popular OAuth providers.
+
+You can test out the OAuth flow below, and see the user data that is returned (your data is only being stored in a cookie and are **not** being sent anywhere else).
+
+<Integrate
+  name="user_info"
+  provider={'google'}
+  redirect={'/docs/making-your-first-integration#boom-youre-done'}
+  className={buttonVariants({
+    className: 'mt-6',
+    variant: 'outline',
+  })}
+>
+  <Image
+    src={'/icons/google.svg'}
+    width={16}
+    height={16}
+    alt="Google Logo"
+    className="mr-2"
+  />
+  <span>Google OAuth</span>
+</Integrate>
+
+<UserData />
+
+</Steps>
+
+import { useData } from 'nextra/data';
+import cookie from 'cookie';
+
+export const getServerSideProps = (context) => {
+  const cookies = context.req.headers.cookie;
+  const parsedCookies = cookies ? cookie.parse(cookies) : {};
+  const googleUserInfo = parsedCookies.google_user_info || "{}";
+
+return {
+props: {
+ssg: {
+cookies: {
+googleUserInfo,
+},
+},
+},
+};
+};
+
+export const UserData = () => {
+  // Get the data from SSG, and render it as a component.
+  const { cookies } = useData();
+  return (
+    <>
+      <pre>{JSON.stringify(JSON.parse(cookies.googleUserInfo), null, 2)}</pre>
+    </>
+  );
+};

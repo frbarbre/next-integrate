@@ -1,0 +1,287 @@
+import { Tabs, Pre, Code, Steps, Callout, FileTree } from 'nextra/components';
+import Link from 'next/link';
+
+# Getting Started
+
+export function Initialize() {
+  return (
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tabs.Tab className="bg-emerald-900">
+        <Pre hasCopyCode={true}>
+          <Code>npm i next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+      <Tabs.Tab>
+        <Pre hasCopyCode={true}>
+          <Code>yarn add next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+      <Tabs.Tab>
+        <Pre hasCopyCode={true}>
+          <Code>pnpm i next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+      <Tabs.Tab>
+        <Pre hasCopyCode={true}>
+          <Code>bun i next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+    </Tabs>
+  );
+}
+
+export function Install() {
+  return (
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tabs.Tab className="bg-emerald-900">
+        <Pre hasCopyCode={true}>
+          <Code>npm i next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+      <Tabs.Tab>
+        <Pre hasCopyCode={true}>
+          <Code>yarn add next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+      <Tabs.Tab>
+        <Pre hasCopyCode={true}>
+          <Code>pnpm i next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+      <Tabs.Tab>
+        <Pre hasCopyCode={true}>
+          <Code>bun i next-integrate</Code>
+        </Pre>
+      </Tabs.Tab>
+    </Tabs>
+  );
+}
+
+<Steps>
+### Initialize a new Next.js application
+If you're starting a new project, start by creating a new Next.js application.
+
+<Pre hasCopyCode={true}>
+  <Code>npx create-next-app@latest</Code>
+</Pre>
+
+### Install Next Integrate
+
+To get started you'll have to install Next Integrate with your prefered package manager.
+
+<Install />
+
+### Create enviromental variable
+
+Next you'll have to make a new `.env.local` file and set a `BASE_URL` variable, this is used to ensure the OAuth flows will redirect to the correct url.
+
+<Callout type="info" emoji="ℹ️">
+  The `BASE_URL` variable need to be changed to your production URL, when you've
+  deployed your application.
+</Callout>
+
+<Pre hasCopyCode={true} filename=".env.local">
+  <Code>
+    BASE_URL=http://<span>localhost:3000</span>
+  </Code>
+</Pre>
+
+### Create configuration file
+
+Next create a new file in the root of your project called `auth.ts`. and copy paste the following code:
+
+```ts filename="auth.ts" copy showLineNumbers
+import { NextIntegrate } from 'next-integrate';
+import { cookies } from 'next/headers';
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integrations/google
+  base_url: process.env.BASE_URL!,
+  providers: [],
+});
+```
+
+### Setup route handler
+
+Next you'll to setup a route handler, that'll handle all the necessary redirect and requests for the libary to work. Please create a new `route.ts` file at this location `app/api/auth/[...integration]/route.ts`, and copy paste the file below.
+
+**Note:** even though the `app` directory is specfic the the App router, it'll still work in the Pages router.
+
+<Callout emoji="💡">
+  If you need to configure a custom base path like this:\
+  `app/a-custom-name/api/auth/[...integration]/route.ts`
+  <span className="mt-6 flex gap-1">
+    Please refer to this [guide](/docs/guides/configure-custom-basepath)
+  </span>
+</Callout>
+
+You should end up with a folder structure like this:
+
+<FileTree>
+  <FileTree.Folder name="app" defaultOpen>
+    <FileTree.Folder name="api" defaultOpen>
+      <FileTree.Folder name="auth" defaultOpen>
+        <FileTree.Folder name="[...integration]" defaultOpen>
+          <FileTree.File name="route.ts" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+
+  </FileTree.Folder>
+</FileTree>
+
+```ts filename="route.ts" copy showLineNumbers
+import { auth } from '@/auth';
+import { clearCookies, exchange, handler, NextRequest } from 'next-integrate';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+
+// BASE_URL is the URL of the app, e.g. https://example.com, set in the .env file
+const BASE_URL = process.env.BASE_URL;
+
+export async function GET(
+  req: NextRequest,
+  context: { params: { integration: string[] } },
+) {
+  const cookieStore = cookies();
+
+  // This function generates the auth URL
+  const { auth_url, callback, error, options, redirect } = await handler({
+    req,
+    context,
+    auth,
+    cookieStore,
+  });
+
+  if (error) NextResponse.redirect(new URL(`?error${error}`, BASE_URL));
+
+  const auth_error = req.nextUrl.searchParams.get('error');
+
+  if (auth_error) {
+    clearCookies({ cookieStore });
+
+    return NextResponse.redirect(
+      new URL(`${redirect}?error=${auth_error}`, BASE_URL),
+    );
+  }
+
+  const code = req.nextUrl.searchParams.get('code');
+
+  // If there is no code, redirect to the auth URL
+  if (!code) return NextResponse.redirect(auth_url);
+
+  // This function exchanges the code for the tokens,
+  // You can handle the tokens in the callback function in the auth.ts file,
+  // or here in the route handler like this:
+
+  //const tokens = await exchange({ callback, code, options, cookieStore });
+
+  await exchange({ callback, code, options, cookieStore });
+
+  return NextResponse.redirect(new URL(redirect, BASE_URL));
+}
+```
+
+### Create an integrate components
+
+Create a new folder in the root of your project called `components`, and create a new component within that folder called `integrate.tsx`.
+
+<Tabs items={["App Router", "Pages Router"]}>
+  <Tabs.Tab>
+  ```ts filename="integrate.tsx" copy showLineNumbers
+  "use client";
+  
+  import { integrate, Provider } from "next-integrate";
+  import Link from "next/link";
+  import { usePathname } from "next/navigation";
+  import { AnchorHTMLAttributes } from "react";
+  
+  export default function Integrate({
+    provider, // The provider defined in the auth.ts file
+    name, // The name of the integration defined in the auth.ts file
+    children, // The children of the component
+    redirect, // Optional, the URL to redirect to after the integration
+    className, // Optional, the class name of the component
+    ...props // The rest of the props
+  }: {
+    provider: Provider;
+    name: string;
+    children?: React.ReactNode;
+    redirect?: string;
+    className?: string;
+  } & AnchorHTMLAttributes<HTMLAnchorElement>) {
+    const pathname = usePathname(); // The current URL, to redirect back to after the integration
+  
+    // This function generates the integration URL, which is used in the Link component
+    const integration = integrate({
+      name,
+      provider,
+      redirect: redirect || pathname,
+      // base_path: "/something", The path to the integration route if it's different from the default: (api/auth/[...integration]/route.ts)
+    });
+    
+    return (
+      <Link href={integration} className={className} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  ```ts filename="integrate.tsx" copy showLineNumbers
+  import { integrate, Provider } from "next-integrate";
+  import Link from "next/link";
+  import { useRouter } from "next/router";
+  import { AnchorHTMLAttributes } from "react";
+  
+  export default function Integrate({
+    provider, // The provider defined in the auth.ts file
+    name, // The name of the integration defined in the auth.ts file
+    children, // The children of the component
+    redirect, // Optional, the URL to redirect to after the integration
+    className, // Optional, the class name of the component
+    ...props // The rest of the props
+  }: {
+    provider: Provider;
+    name: string;
+    children?: React.ReactNode;
+    redirect?: string;
+    className?: string;
+  } & AnchorHTMLAttributes<HTMLAnchorElement>) {
+    const { asPath } = useRouter(); // The current URL, to redirect back to after the integration
+  
+    // This function generates the integration URL, which is used in the Link component
+    const integration = integrate({
+      name,
+      provider,
+      redirect: redirect || asPath,
+      // base_path: "/something", The path to the integration route if it's different from the default: (api/auth/[...integration]/route.ts)
+    });
+    
+    return (
+      <Link href={integration} className={className} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  ```
+  </Tabs.Tab>
+</Tabs>
+
+This component can be customized however you want, the `integrate()` function
+just returns a link to the API route:
+
+```ts
+console.log(integration); // /api/auth/integration/google?name=google_calender&redirect=/dashboard
+```
+
+### You're all set!
+
+That's all the setup done, you can proceed by looking into [making your first integration](/docs/making-your-first-integration).
+
+</Steps>

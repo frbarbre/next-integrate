@@ -1,0 +1,15 @@
+{
+  "introduction": "Introduction",
+  "setup": {
+    "type": "separator",
+    "title": "Setup"
+  },
+  "getting-started": "Getting started",
+  "making-your-first-integration": "Making your first integration",
+  "guides": "Guides",
+  "line": {
+    "type": "separator",
+    "title": "--"
+  },
+  "providers": "Providers"
+}

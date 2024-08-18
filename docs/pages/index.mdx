@@ -1,0 +1,67 @@
+###### Homepage
+
+import { Pre, Code } from 'nextra/components';
+import { hero } from '@/code';
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
+import { Github } from 'lucide-react';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import ProviderCarousel from '@/components/provider-carousel';
+
+<main className="min-h-[calc(100svh-64px)] flex items-center justify-center">
+<div>
+   <div className="w-full py-6 sm:py-20">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 gap-8 items-center lg:grid-cols-2">
+          <div className="flex gap-4 flex-col">
+            <div>
+              <Badge className="text-white">Beta</Badge>
+            </div>
+            <div className="flex gap-4 flex-col">
+              <h1 className="text-5xl md:text-7xl max-w-lg tracking-tight text-left font-medium">
+                OAuth your way
+              </h1>
+              <h2 className="lg:max-w-[480px]">Make your own integrations to the most popular OAuth providers, and customize it for your usecase.</h2>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <Link
+                className={cn(
+                  buttonVariants({
+                    size: "lg",
+                  }), "bg-primary text-white"
+                )}
+                href={"/docs/getting-started"}
+              >
+                Get started
+              </Link>
+
+              <a
+                className={cn(
+                  buttonVariants({
+                    size: "lg",
+                    variant: "secondary",
+                  }),
+                  "gap-2"
+                )}
+                href={"https://github.com/frbarbre/next-integrate"}
+                target="_blank"
+              >
+                <Github className="w-4 h-4" />
+                Source
+              </a>
+            </div>
+          </div>
+
+          <Pre data-language="ts" filename="auth.ts" className="flex items-center overflow-auto">
+            <Code data-language="ts">{hero}</Code>
+          </Pre>
+
+</div>
+</div>
+</div>
+
+<ProviderCarousel />
+
+</div>
+</main>

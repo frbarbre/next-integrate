@@ -1,0 +1,126 @@
+import { Steps, Tabs } from "nextra/components";
+
+# Configure a custom base path
+
+There are instances where it can be necessary to reconfigure the base path of the redirect URL.
+
+This guide will take you through the steps to achieve this.
+
+<Steps>
+### Setup the base path in the router
+
+Setup the folder structure in the router to fit your base path. Like this where `something` can be whatever you want: `app/something/api/auth/[...integration]/route.ts`
+
+### Change basepath in `auth.ts` file
+
+Next you'll to add the base path to the base_url property in the `auth.ts` file like this:
+
+```ts filename="auth.ts" copy {10} showLineNumbers
+import { NextIntegrate } from "next-integrate";
+import { cookies } from "next/headers";
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integrations/google
+  base_url: process.env.BASE_URL! + "/something",
+  providers: [],
+});
+```
+
+### Set `base_path` parameter in `integrate()` function
+
+In [step 6](/docs/getting-started#create-an-integrate-components) of the Getting Started guide, i've provided a component which uses the `integrate` function. Here you'll also have to configure the base path in the `base_path` parameter like this:
+
+<Tabs items={["App Router", "Pages Router"]}>
+  <Tabs.Tab>
+  ```ts filename="integrate.tsx" copy {29} showLineNumbers
+  "use client";
+  
+  import { integrate, Provider } from "next-integrate";
+  import Link from "next/link";
+  import { usePathname } from "next/navigation";
+  import { AnchorHTMLAttributes } from "react";
+  
+  export default function Integrate({
+    provider, // The provider defined in the auth.ts file
+    name, // The name of the integration defined in the auth.ts file
+    children, // The children of the component
+    redirect, // Optional, the URL to redirect to after the integration
+    className, // Optional, the class name of the component
+    ...props // The rest of the props
+  }: {
+    provider: Provider;
+    name: string;
+    children?: React.ReactNode;
+    redirect?: string;
+    className?: string;
+  } & AnchorHTMLAttributes<HTMLAnchorElement>) {
+    const pathname = usePathname(); // The current URL, to redirect back to after the integration
+  
+    // This function generates the integration URL, which is used in the Link component
+    const integration = integrate({
+      name,
+      provider,
+      redirect: redirect || pathname,
+      base_path: "/something", // The path to the integration route if it's different from the default: (api/auth/[...integration]/route.ts)
+    });
+    
+    return (
+      <Link href={integration} className={className} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  ```ts filename="integrate.tsx" copy {27} showLineNumbers
+  import { integrate, Provider } from "next-integrate";
+  import Link from "next/link";
+  import { useRouter } from "next/router";
+  import { AnchorHTMLAttributes } from "react";
+  
+  export default function Integrate({
+    provider, // The provider defined in the auth.ts file
+    name, // The name of the integration defined in the auth.ts file
+    children, // The children of the component
+    redirect, // Optional, the URL to redirect to after the integration
+    className, // Optional, the class name of the component
+    ...props // The rest of the props
+  }: {
+    provider: Provider;
+    name: string;
+    children?: React.ReactNode;
+    redirect?: string;
+    className?: string;
+  } & AnchorHTMLAttributes<HTMLAnchorElement>) {
+    const { asPath } = useRouter(); // The current URL, to redirect back to after the integration
+  
+    // This function generates the integration URL, which is used in the Link component
+    const integration = integrate({
+      name,
+      provider,
+      redirect: redirect || asPath,
+      base_path: "/something", // The path to the integration route if it's different from the default: (api/auth/[...integration]/route.ts)
+    });
+    
+    return (
+      <Link href={integration} className={className} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  ```
+  </Tabs.Tab>
+</Tabs>
+
+### New redirect URL aquired!
+
+That's it, remember that your redirect URL from now on always should be prefixed with your base path when setting it on the various provider configs like this:
+
+`https://example.com/something/api/auth/integration/google`
+
+</Steps>

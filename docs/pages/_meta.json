@@ -1,0 +1,17 @@
+{
+  "index": {
+    "title": "Next Integrate",
+    "type": "page",
+    "display": "hidden",
+    "theme": {
+      "breadcrumb": false,
+      "sidebar": false,
+      "footer": true,
+      "layout": "raw"
+    }
+  },
+  "docs": {
+    "type": "page",
+    "title": "Documentation"
+  }
+}
