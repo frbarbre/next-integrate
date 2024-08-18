@@ -1,4 +1,4 @@
-import { Steps, Tabs } from "nextra/components";
+import { Steps, Tabs } from 'nextra/components';
 
 # Configure a custom base path
 
@@ -16,16 +16,16 @@ Setup the folder structure in the router to fit your base path. Like this where 
 Next you'll to add the base path to the base_url property in the `auth.ts` file like this:
 
 ```ts filename="auth.ts" copy {10} showLineNumbers
-import { NextIntegrate } from "next-integrate";
-import { cookies } from "next/headers";
+import { NextIntegrate } from 'next-integrate';
+import { cookies } from 'next/headers';
 
 export const { auth } = NextIntegrate({
   // The URL of the app, e.g. https://example.com, set in the .env file.
   // If you want to modify the redirect URL, to be prefixed with something else,
   // you can do it here like this:
   // base_url: process.env.BASE_URL! + "/some-prefix",
-  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integrations/google
-  base_url: process.env.BASE_URL! + "/something",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integration/google
+  base_url: process.env.BASE_URL! + '/something',
   providers: [],
 });
 ```
