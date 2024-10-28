@@ -14,7 +14,9 @@ export type Provider =
   | "notion"
   | "discord"
   | "github"
-  | "tiktok";
+  | "tiktok"
+  | "trustpilot"
+  | "accuranker";
 
 export type Auth = {
   base_url: string;

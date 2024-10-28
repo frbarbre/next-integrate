@@ -1,4 +1,8 @@
 import {
+  getAccurankerAccessToken,
+  getAccurankerAuthorizeUrl,
+} from "./providers/accuranker";
+import {
   getDiscordAccessToken,
   getDiscordAuthorizeUrl,
 } from "./providers/discord";
@@ -39,6 +43,10 @@ import {
   getTiktokAccessToken,
   getTiktokAuthorizeUrl,
 } from "./providers/tiktok";
+import {
+  getTrustpilotAccessToken,
+  getTrustpilotAuthorizeUrl,
+} from "./providers/trustpilot";
 import { Tokens } from "./types";
 
 export async function generateAuthURL({
@@ -177,6 +185,30 @@ export async function generateAuthURL({
 
   if (params.includes("integration/tiktok")) {
     const url = getTiktokAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      code_challenge,
+      ...props,
+    });
+
+    return url;
+  }
+
+  if (params.includes("integration/trustpilot")) {
+    const url = getTrustpilotAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      code_challenge,
+      ...props,
+    });
+
+    return url;
+  }
+
+  if (params.includes("integration/accuranker")) {
+    const url = getAccurankerAuthorizeUrl({
       client_id,
       scope,
       base_url,
@@ -346,6 +378,30 @@ export async function generateTokens({
       code,
       callback,
       code_verifier,
+    });
+
+    return tokens;
+  }
+
+  if (params.includes("integration/trustpilot")) {
+    const tokens = await getTrustpilotAccessToken({
+      base_url,
+      client_id,
+      client_secret,
+      code,
+      callback,
+    });
+
+    return tokens;
+  }
+
+  if (params.includes("integration/accuranker")) {
+    const tokens = await getAccurankerAccessToken({
+      base_url,
+      client_id,
+      client_secret,
+      code,
+      callback,
     });
 
     return tokens;
