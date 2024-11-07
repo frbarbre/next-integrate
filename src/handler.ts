@@ -58,30 +58,30 @@ export async function handler({
   cookieStore,
 }: {
   context: {
-    params: {
+    params: Promise<{
       integration: string[];
-    };
+    }>;
   };
   req: NextRequest;
   auth: Auth;
-  cookieStore: ReadonlyRequestCookies;
+  cookieStore: Promise<ReadonlyRequestCookies>;
 }) {
   const { code_verifier, code_challenge } = await generateCodes();
 
-  const params = context.params.integration.join("/");
+  const params = (await context.params).integration;
   const code = req.nextUrl.searchParams.get("code");
 
   const newName = req.nextUrl.searchParams.get("name");
   const newRedirect = req.nextUrl.searchParams.get("redirect");
 
   if (!code) {
-    cookieStore.set("name", newName || "");
-    cookieStore.set("redirect", newRedirect || "");
-    cookieStore.set("code_verifier", code_verifier);
+    (await cookieStore).set("name", newName || "");
+    (await cookieStore).set("redirect", newRedirect || "");
+    (await cookieStore).set("code_verifier", code_verifier);
   }
 
-  const name = cookieStore.get("name")?.value;
-  const redirect = cookieStore.get("redirect")?.value;
+  const name = (await cookieStore).get("name")?.value;
+  const redirect = (await cookieStore).get("redirect")?.value;
 
   if (!name)
     return {
@@ -91,9 +91,7 @@ export async function handler({
 
   const { providers, base_url } = auth;
 
-  const provider = providers.find(
-    (p) => p.provider === context.params.integration[1]
-  );
+  const provider = providers.find((p) => p.provider === params[1]);
 
   const integration = provider?.integrations.find((i) => i.name === name);
 
@@ -109,7 +107,7 @@ export async function handler({
     client_secret: provider.client_secret,
     code_challenge,
     base_url,
-    params,
+    params: params.join("/"),
   };
 
   const auth_url = await generateAuthURL(options);
@@ -145,11 +143,11 @@ export async function exchange({
   } | null;
   callback: (tokens: Tokens) => void;
   code: string;
-  cookieStore: ReadonlyRequestCookies;
+  cookieStore: Promise<ReadonlyRequestCookies>;
 }): Promise<Tokens | undefined> {
   if (!options) return;
 
-  const code_verifier = cookieStore.get("code_verifier")?.value;
+  const code_verifier = (await cookieStore).get("code_verifier")?.value;
 
   const tokens = await generateTokens({
     ...options,
@@ -158,19 +156,19 @@ export async function exchange({
     code,
   });
 
-  cookieStore.delete("name");
-  cookieStore.delete("redirect");
-  cookieStore.delete("code_verifier");
+  (await cookieStore).delete("name");
+  (await cookieStore).delete("redirect");
+  (await cookieStore).delete("code_verifier");
 
   return tokens;
 }
 
-export function clearCookies({
+export async function clearCookies({
   cookieStore,
 }: {
-  cookieStore: ReadonlyRequestCookies;
+  cookieStore: Promise<ReadonlyRequestCookies>;
 }) {
-  cookieStore.delete("name");
-  cookieStore.delete("redirect");
-  cookieStore.delete("code_verifier");
+  (await cookieStore).delete("name");
+  (await cookieStore).delete("redirect");
+  (await cookieStore).delete("code_verifier");
 }

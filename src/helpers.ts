@@ -212,7 +212,6 @@ export async function generateAuthURL({
       client_id,
       scope,
       base_url,
-      code_challenge,
       ...props,
     });
 

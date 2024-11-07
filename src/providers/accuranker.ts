@@ -14,7 +14,7 @@ export function getAccurankerAuthorizeUrl({
   client_secret?: string;
   [key: string]: string | undefined;
 }): string {
-  return `https://app.accuranker.com/oauth/authorize/${qs({
+  return `https://app.accuranker.com/oauth/authorize/?${qs({
     response_type: "code",
     client_id: client_id,
     scope: scope,
