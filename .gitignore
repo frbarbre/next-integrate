@@ -1,13 +1,12 @@
 /dist
 /node_modules
-
 .env
 .DS_Store
-
 bun.lockb
-
 package-lock.json
-
 /docs/package-lock.json
-
 /docs/.env.local
+/docs/.env
+deploy.sh
+update.sh
+.env.*

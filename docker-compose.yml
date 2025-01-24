@@ -1,0 +1,6 @@
+services:
+  next:
+    build:
+      context: ./docs
+    ports:
+      - "3001:3000"
