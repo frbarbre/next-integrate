@@ -3,7 +3,6 @@
 .env
 .DS_Store
 bun.lockb
-package-lock.json
 /docs/.env.local
 /docs/.env
 deploy.sh
