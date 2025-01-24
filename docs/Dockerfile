@@ -5,7 +5,6 @@ FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --force
-RUN npm install @napi-rs/simple-git-linux-arm64-musl
 
 # Stage 2: Build the application
 FROM base AS builder
