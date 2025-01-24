@@ -1,5 +1,5 @@
 services:
-  next:
+  docs:
     build:
       context: ./docs
     ports:
