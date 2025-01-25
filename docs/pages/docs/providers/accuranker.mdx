@@ -2,34 +2,34 @@ import Image from 'next/image';
 import { Steps } from 'nextra/components';
 
 <div className="flex w-full items-center justify-between gap-4">
-  # Notion Provider
-  <Image src="/icons/notion.svg" alt="notion-logo" width={48} height={48} />
+  # Accuranker Provider
+  <Image
+    src="/icons/accuranker.png"
+    alt="accuranker-logo"
+    width={48}
+    height={48}
+  />
 </div>
 
 If you need a detailed guide on how to setup a provider pleaser refer to the [Getting Started](/docs/getting-started) and [Making your first integration](/docs/making-your-first-integration) guides.
 
-## Important notes
-
-- You set the `scopes` from the Notion OAuth panel.
-
 ## Resources
 
-- [Authorization](https://developers.notion.com/docs/authorization)
-- [Internal integration auth flow set-up](https://developers.notion.com/docs/authorization#internal-integration-auth-flow-set-up)
+- [OAuth](https://app.accuranker.com/api/read-docs#section/Authentication/OAuth)
 
 ## Setup
 
 <Steps>
 ### Callback URL
 ```plaintext copy
-https://your-app.com/api/auth/integration/notion
+https://your-app.com/api/auth/integration/accuranker
 ```
 
 ### Environment variables
 
 ```.env filename=".env.local" copy
-AUTH_NOTION_ID=your-client-id
-AUTH_NOTION_SECRET=your-client-secret
+AUTH_ACCURANKER_ID=your-client-id
+AUTH_ACCURANKER_SECRET=your-client-secret
 ```
 
 ### Add the provider to the `auth.ts` file.
@@ -46,9 +46,9 @@ export const { auth } = NextIntegrate({
   base_url: process.env.BASE_URL!,
   providers: [
     {
-      provider: 'notion',
-      client_id: process.env.AUTH_NOTION_ID!,
-      client_secret: process.env.AUTH_NOTION_SECRET!,
+      provider: 'accuranker',
+      client_id: process.env.AUTH_ACCURANKER_ID!,
+      client_secret: process.env.AUTH_ACCURANKER_SECRET!,
       integrations: [],
     },
   ],
@@ -69,9 +69,9 @@ export const { auth } = NextIntegrate({
   base_url: process.env.BASE_URL!,
   providers: [
     {
-      provider: 'notion',
-      client_id: process.env.AUTH_NOTION_ID!,
-      client_secret: process.env.AUTH_NOTION_SECRET!,
+      provider: 'accuranker',
+      client_id: process.env.AUTH_ACCURANKER_ID!,
+      client_secret: process.env.AUTH_ACCURANKER_SECRET!,
       integrations: [
         {
           name: 'some_custom_name',
@@ -98,8 +98,8 @@ import Integrate from '@/components/integrate';
 export default function Home() {
   return (
     <main>
-      <Integrate provider="notion" name="some_custom_name">
-        Get Notion User Info
+      <Integrate provider="accuranker" name="some_custom_name">
+        Get Accuranker User Info
       </Integrate>
     </main>
   );
@@ -108,4 +108,4 @@ export default function Home() {
 
 ## Options
 
-Notion does not require any options, so you can leave the `options` object empty. If you wanna learn more about how Notion OAuth works, please refer to the [Notion OAuth documentation](https://developers.notion.com/docs/authorization).
+Accuranker does not require any options, so you can leave the `options` object empty. If you wanna learn more about how Accuranker OAuth works, please refer to the [Accuranker OAuth documentation](https://app.accuranker.com/api/read-docs#section/Authentication/OAuth).

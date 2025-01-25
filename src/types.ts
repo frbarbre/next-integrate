@@ -17,7 +17,8 @@ export type Provider =
   | "tiktok"
   | "trustpilot"
   | "accuranker"
-  | "click-up";
+  | "click-up"
+  | "linkedin";
 
 export type Auth = {
   base_url: string;

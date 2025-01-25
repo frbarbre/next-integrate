@@ -31,7 +31,7 @@ export default function ProviderCarousel() {
 
   return (
     <div className="w-full py-6 sm:py-20">
-      <div className="container mx-auto max-w-[100svw]">
+      <div className="mx-auto max-w-[100svw] lg:container">
         <div className="flex flex-col gap-10">
           <h2 className="font-regular text-left text-xl tracking-tighter md:text-3xl lg:max-w-xl">
             Support for various providers
