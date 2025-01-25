@@ -3,6 +3,10 @@ import {
   getAccurankerAuthorizeUrl,
 } from "./providers/accuranker";
 import {
+  getClickUpAccessToken,
+  getClickUpAuthorizeUrl,
+} from "./providers/click-up";
+import {
   getDiscordAccessToken,
   getDiscordAuthorizeUrl,
 } from "./providers/discord";
@@ -217,6 +221,17 @@ export async function generateAuthURL({
 
     return url;
   }
+
+  if (params.includes("integration/click-up")) {
+    const url = getClickUpAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      ...props,
+    });
+
+    return url;
+  }
 }
 
 export async function generateTokens({
@@ -396,6 +411,18 @@ export async function generateTokens({
 
   if (params.includes("integration/accuranker")) {
     const tokens = await getAccurankerAccessToken({
+      base_url,
+      client_id,
+      client_secret,
+      code,
+      callback,
+    });
+
+    return tokens;
+  }
+
+  if (params.includes("integration/click-up")) {
+    const tokens = await getClickUpAccessToken({
       base_url,
       client_id,
       client_secret,

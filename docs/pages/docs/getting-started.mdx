@@ -136,16 +136,16 @@ You should end up with a folder structure like this:
 
 ```ts filename="route.ts" copy showLineNumbers
 import { auth } from '@/auth';
-import { clearCookies, exchange, handler, NextRequest } from 'next-integrate';
+import { clearCookies, exchange, handler } from 'next-integrate';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // BASE_URL is the URL of the app, e.g. https://example.com, set in the .env file
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(
   req: NextRequest,
-  context: { params: { integration: string[] } },
+  context: { params: Promise<{ integration: string[] }> },
 ) {
   const cookieStore = cookies();
 

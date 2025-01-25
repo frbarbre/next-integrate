@@ -133,7 +133,7 @@ export const { auth } = NextIntegrate({
             scope: 'openid https://www.googleapis.com/auth/userinfo.profile',
           },
           callback: async (data) => {
-            cookies().set('session', JSON.stringify(data));
+            (await cookies()).set('session', JSON.stringify(data));
           },
         },
       ],
