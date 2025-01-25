@@ -69,4 +69,9 @@ export const providers = [
     path: 'accuranker.png',
     invert: false,
   },
+  {
+    name: 'LinkedIn',
+    path: 'linkedin.svg',
+    invert: false,
+  },
 ];
