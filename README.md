@@ -17,17 +17,21 @@ Next Integrate is a flexible and customizable npm library designed to simplify t
 
 ## Supported Providers
 
-- [Google](https://next-integrate.vercel.app/docs/providers/google)
-- [Facebook](https://next-integrate.vercel.app/docs/providers/facebook)
-- [Discord](https://next-integrate.vercel.app/docs/providers/discord)
-- [GitHub](https://next-integrate.vercel.app/docs/providers/github)
-- [Klaviyo](https://next-integrate.vercel.app/docs/providers/klaviyo)
-- [Notion](https://next-integrate.vercel.app/docs/providers/notion)
-- [Pinterest](https://next-integrate.vercel.app/docs/providers/pinterest)
-- [Slack](https://next-integrate.vercel.app/docs/providers/slack)
-- [Snapchat](https://next-integrate.vercel.app/docs/providers/snapchat)
-- [Spotify](https://next-integrate.vercel.app/docs/providers/spotify)
-- [TikTok](https://next-integrate.vercel.app/docs/providers/tiktok)
+- [Google](https://next-integrate.frederikbarbre.dk/docs/providers/google)
+- [Facebook](https://next-integrate.frederikbarbre.dk/docs/providers/facebook)
+- [Discord](https://next-integrate.frederikbarbre.dk/docs/providers/discord)
+- [GitHub](https://next-integrate.frederikbarbre.dk/docs/providers/github)
+- [Klaviyo](https://next-integrate.frederikbarbre.dk/docs/providers/klaviyo)
+- [Notion](https://next-integrate.frederikbarbre.dk/docs/providers/notion)
+- [Pinterest](https://next-integrate.frederikbarbre.dk/docs/providers/pinterest)
+- [Slack](https://next-integrate.frederikbarbre.dk/docs/providers/slack)
+- [Snapchat](https://next-integrate.frederikbarbre.dk/docs/providers/snapchat)
+- [Spotify](https://next-integrate.frederikbarbre.dk/docs/providers/spotify)
+- [TikTok](https://next-integrate.frederikbarbre.dk/docs/providers/tiktok)
+- [LinkedIn](https://next-integrate.frederikbarbre.dk/docs/providers/linkedin)
+- [ClickUp](https://next-integrate.frederikbarbre.dk/docs/providers/click-up)
+- [Accuranker](https://next-integrate.frederikbarbre.dk/docs/providers/accuranker)
+- [Trustpilot](https://next-integrate.frederikbarbre.dk/docs/providers/trustpilot)
 - And more to come...
 
 ## Installation
