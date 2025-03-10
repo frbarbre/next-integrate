@@ -56,6 +56,7 @@ export async function handler({
   req,
   auth,
   cookieStore,
+  debug = false,
 }: {
   context: {
     params: Promise<{
@@ -65,16 +66,30 @@ export async function handler({
   req: NextRequest;
   auth: Auth;
   cookieStore: Promise<ReadonlyRequestCookies>;
+  debug?: boolean;
 }) {
   const { code_verifier, code_challenge } = await generateCodes();
 
   const params = (await context.params).integration;
   const code = req.nextUrl.searchParams.get("code");
 
+  if (debug) {
+    console.log("code_verifier", code_verifier);
+    console.log("code_challenge", code_challenge);
+  }
+
   const newName = req.nextUrl.searchParams.get("name");
   const newRedirect = req.nextUrl.searchParams.get("redirect");
 
+  if (debug) {
+    console.log("Name", newName);
+    console.log("Redirect", newRedirect);
+  }
+
   if (!code) {
+    if (debug) {
+      console.log("Setting cookies");
+    }
     (await cookieStore).set("name", newName || "");
     (await cookieStore).set("redirect", newRedirect || "");
     (await cookieStore).set("code_verifier", code_verifier);
@@ -83,23 +98,53 @@ export async function handler({
   const name = (await cookieStore).get("name")?.value;
   const redirect = (await cookieStore).get("redirect")?.value;
 
-  if (!name)
+  if (debug) {
+    console.log("Getting newly set cookies");
+    console.log("Name", name);
+    console.log("Redirect", redirect);
+  }
+
+  if (!name) {
+    if (debug) {
+      console.log("Name is required");
+    }
     return {
       ...placerholder,
       error: "Name is required",
     };
+  }
+
+  if (debug) {
+    console.log("Getting providers");
+  }
 
   const { providers, base_url } = auth;
 
+  if (debug) {
+    console.log("Providers", providers);
+    console.log("Base URL", base_url);
+  }
+
   const provider = providers.find((p) => p.provider === params[1]);
 
+  if (debug) {
+    console.log("Provider", provider);
+  }
   const integration = provider?.integrations.find((i) => i.name === name);
 
-  if (!provider || !name || !integration)
+  if (debug) {
+    console.log("Integration", integration);
+  }
+
+  if (!provider || !name || !integration) {
+    if (debug) {
+      console.log("Invalid integration");
+    }
     return {
       ...placerholder,
       error: "Invalid integration",
     };
+  }
 
   const options = {
     ...integration.options,
@@ -110,12 +155,25 @@ export async function handler({
     params: params.join("/"),
   };
 
+  if (debug) {
+    console.log("Options", options);
+  }
+
   const auth_url = await generateAuthURL(options);
-  if (!auth_url)
+
+  if (debug) {
+    console.log("Auth URL", auth_url);
+  }
+
+  if (!auth_url) {
+    if (debug) {
+      console.log("Invalid redirect URL");
+    }
     return {
       ...placerholder,
       error: "Invalid redirect URL",
     };
+  }
 
   return {
     auth_url,
@@ -132,6 +190,7 @@ export async function exchange({
   callback,
   code,
   cookieStore,
+  debug = false,
 }: {
   options: {
     client_id: string;
@@ -144,10 +203,19 @@ export async function exchange({
   callback: (tokens: Tokens) => void;
   code: string;
   cookieStore: Promise<ReadonlyRequestCookies>;
+  debug?: boolean;
 }): Promise<Tokens | undefined> {
   if (!options) return;
 
+  if (debug) {
+    console.log("Options", options);
+  }
+
   const code_verifier = (await cookieStore).get("code_verifier")?.value;
+
+  if (debug) {
+    console.log("Code verifier", code_verifier);
+  }
 
   const tokens = await generateTokens({
     ...options,
@@ -156,9 +224,17 @@ export async function exchange({
     code,
   });
 
+  if (debug) {
+    console.log("Tokens", tokens);
+  }
+
   (await cookieStore).delete("name");
   (await cookieStore).delete("redirect");
   (await cookieStore).delete("code_verifier");
+
+  if (debug) {
+    console.log("Cleared cookies");
+  }
 
   return tokens;
 }

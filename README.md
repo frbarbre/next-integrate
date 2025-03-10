@@ -4,7 +4,7 @@ Next Integrate is a flexible and customizable npm library designed to simplify t
 
 ## Links
 
-- [Documentation](https://next-integrate.vercel.app/)
+- [Documentation](https://next-integrate.frederikbarbre.dk/)
 - [NPM Page](https://www.npmjs.com/package/next-integrate)
 - [Github Repository](https://github.com/frbarbre/next-integrate)
 
