@@ -1,6 +1,6 @@
 {
   "name": "next-integrate",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "An authentication library for making integrations in your Next.js Web Application",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
