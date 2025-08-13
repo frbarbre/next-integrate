@@ -1,6 +1,6 @@
 {
   "name": "next-integrate",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "description": "An authentication library for making integrations in your Next.js Web Application",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -29,10 +29,10 @@
   "devDependencies": {
     "@types/node": "^20.14.11",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "next": "^15.3.5"
   },
-  "dependencies": {
-    "next": "15.3.5",
-    "react": "^19.0.0-rc-66855b96-20241106"
+  "peerDependencies": {
+    "next": ">=13"
   }
 }
