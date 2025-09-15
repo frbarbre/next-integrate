@@ -38,6 +38,10 @@ import {
   getPinterestAccessToken,
   getPinterestAuthorizeUrl,
 } from "./providers/pinterest";
+import {
+  getRedditAccessToken,
+  getRedditAuthorizeUrl,
+} from "./providers/reddit";
 import { getSlackAccessToken, getSlackAuthorizeUrl } from "./providers/slack";
 import {
   getSnapchatAccessToken,
@@ -242,6 +246,18 @@ export async function generateAuthURL({
       client_id,
       scope,
       base_url,
+      ...props,
+    });
+
+    return url;
+  }
+
+  if (params.includes("integration/reddit")) {
+    const url = getRedditAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      code_challenge,
       ...props,
     });
 
@@ -459,4 +475,19 @@ export async function generateTokens({
 
     return tokens;
   }
+
+  if (params.includes("integration/reddit")) {
+    const tokens = await getRedditAccessToken({
+      base_url,
+      client_id,
+      client_secret,
+      code,
+      callback,
+      code_verifier,
+    });
+
+    return tokens;
+  }
+
+  return null;
 }
