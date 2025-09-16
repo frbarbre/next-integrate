@@ -18,7 +18,8 @@ export type Provider =
   | "trustpilot"
   | "accuranker"
   | "click-up"
-  | "linkedin";
+  | "linkedin"
+  | "reddit";
 
 export type Auth = {
   base_url: string;

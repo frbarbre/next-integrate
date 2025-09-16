@@ -16,7 +16,7 @@ export async function getRedditAuthorizeUrl({
   code_challenge: string | undefined;
   [key: string]: string | undefined;
 }): Promise<string> {
-  return `https://www.reddit.com/api/v1/authorize${qs({
+  return `https://www.reddit.com/api/v1/authorize?${qs({
     response_type: "code",
     client_id: client_id,
     scope: scope,
