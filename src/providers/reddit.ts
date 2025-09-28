@@ -23,6 +23,7 @@ export async function getRedditAuthorizeUrl({
     redirect_uri: base_url + "/api/auth/integration/reddit",
     code_challenge_method: "S256",
     code_challenge,
+    state: "hello-world",
     ...props,
   })}`;
 }

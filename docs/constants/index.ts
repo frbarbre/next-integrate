@@ -74,4 +74,14 @@ export const providers = [
     path: 'linkedin.svg',
     invert: false,
   },
+  {
+    name: 'Azure',
+    path: 'azure.svg',
+    invert: false,
+  },
+  {
+    name: 'Reddit',
+    path: 'reddit.svg',
+    invert: false,
+  },
 ];

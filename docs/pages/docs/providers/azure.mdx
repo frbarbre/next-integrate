@@ -1,0 +1,117 @@
+import Image from 'next/image';
+import { Steps } from 'nextra/components';
+
+<div className="flex w-full items-center justify-between gap-4">
+  # Azure Provider
+  <Image src="/icons/azure.svg" alt="azure-logo" width={48} height={48} />
+</div>
+
+If you need a detailed guide on how to setup a provider pleaser refer to the [Getting Started](/docs/getting-started) and [Making your first integration](/docs/making-your-first-integration) guides.
+
+## Resources
+
+- [Microsoft identity platform and OAuth 2.0 authorization code flow](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow)
+- [Scopes](https://learn.microsoft.com/en-us/entra/identity-platform/scopes-oidc)
+
+## Setup
+
+<Steps>
+### Callback URL
+```plaintext copy
+https://your-app.com/api/auth/integration/azure
+```
+
+### Environment variables
+
+```.env filename=".env.local" copy
+AUTH_AZURE_ID=your-client-id
+AUTH_AZURE_SECRET=your-client-secret
+```
+
+### Add the provider to the `auth.ts` file.
+
+```ts filename="auth.ts" copy {11-16}
+import { NextIntegrate } from 'next-integrate';
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integration/google
+  base_url: process.env.BASE_URL!,
+  providers: [
+    {
+      provider: 'azure',
+      client_id: process.env.AUTH_AZURE_ID!,
+      client_secret: process.env.AUTH_AZURE_SECRET!,
+      integrations: [],
+    },
+  ],
+});
+```
+
+### Add an integration
+
+```ts copy filename="auth.ts" {16-24}
+import { NextIntegrate } from 'next-integrate';
+
+export const { auth } = NextIntegrate({
+  // The URL of the app, e.g. https://example.com, set in the .env file.
+  // If you want to modify the redirect URL, to be prefixed with something else,
+  // you can do it here like this:
+  // base_url: process.env.BASE_URL! + "/some-prefix",
+  // This will change the redirect URL to eg. https://example.com/some-prefix/api/auth/integration/google
+  base_url: process.env.BASE_URL!,
+  providers: [
+    {
+      provider: 'azure',
+      client_id: process.env.AUTH_AZURE_ID!,
+      client_secret: process.env.AUTH_AZURE_SECRET!,
+      integrations: [
+        {
+          name: 'some_custom_name',
+          options: {
+            scope: 'openid User.Read',
+          },
+          callback: async (data) => {
+            // This is where you can save the data to a database, or do something else with it.
+          },
+        },
+      ],
+    },
+  ],
+});
+```
+
+</Steps>
+
+## Usage
+
+To use the your new integration, you can use the `<Integrate />` component found in the [Getting Started Guide]("docs/getting-started#create-an-integrate-components").
+
+```tsx copy {1, 6-8}
+import Integrate from '@/components/integrate';
+
+export default function Home() {
+  return (
+    <main>
+      <Integrate provider="azure" name="some_custom_name">
+        Get Azure User Info
+      </Integrate>
+    </main>
+  );
+}
+```
+
+## Options
+
+You can pass various parameters on the `options` object to customize the integration. The parameters are specific to the Azure provider, please refer to the [documentation](https://learn.microsoft.com/en-us/entra/identity-platform/scopes-oidc), to verify the information if needed.
+
+| parameter       | type     | required      | description                                                                                                                                                                                                                                                                                                                          |
+| :-------------- | :------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scope`         | `string` | `true`        | A list of URL's that determines what the user will be prompted to give access to. You can parse multiple scopes by seperating with a space. You can find the full list of scopes for the [here](https://learn.microsoft.com/en-us/entra/identity-platform/scopes-oidc).                                                              |
+| `response_mode` | `string` | `recommended` | Specifies how the identity platform should return the requested token to your app. Valid values are query, fragment, and form_post.                                                                                                                                                                                                  |
+| `prompt`        | `string` | `optional`    | Indicates the type of user interaction that is required. Valid values are login, none, consent, and select_account.                                                                                                                                                                                                                  |
+| `login_hint`    | `string` | `optional`    | You can use this parameter to pre-fill the username and email address field of the sign-in page for the user. Apps can use this parameter during reauthentication, after already extracting the login_hint optional claim from an earlier sign-in.                                                                                   |
+| `domain_hint`   | `string` | `optional`    | If included, the app skips the email-based discovery process that user goes through on the sign-in page, leading to a slightly more streamlined user experience. For example, sending them to their federated identity provider. Apps can use this parameter during reauthentication, by extracting the tid from a previous sign-in. |
