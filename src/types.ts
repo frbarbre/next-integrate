@@ -19,7 +19,8 @@ export type Provider =
   | "accuranker"
   | "click-up"
   | "linkedin"
-  | "reddit";
+  | "reddit"
+  | "azure";
 
 export type Auth = {
   base_url: string;
