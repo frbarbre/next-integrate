@@ -8,7 +8,7 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(
   req: NextRequest,
-  context: { params: { integration: string[] } },
+  context: { params: Promise<{ integration: string[] }> },
 ) {
   const cookieStore = cookies();
 

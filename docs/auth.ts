@@ -22,7 +22,7 @@ export const { auth } = NextIntegrate({
             prompt: 'consent',
           },
           callback: async (data) => {
-            cookies().set('google_user_info', JSON.stringify(data));
+            (await cookies()).set('google_user_info', JSON.stringify(data));
           },
         },
         {
@@ -33,7 +33,10 @@ export const { auth } = NextIntegrate({
             prompt: 'consent',
           },
           callback: async (data) => {
-            cookies().set('google_search_console', JSON.stringify(data));
+            (await cookies()).set(
+              'google_search_console',
+              JSON.stringify(data),
+            );
           },
         },
       ],
