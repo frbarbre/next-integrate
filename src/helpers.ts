@@ -2,6 +2,7 @@ import {
   getAccurankerAccessToken,
   getAccurankerAuthorizeUrl,
 } from "./providers/accuranker";
+import { getAzureAccessToken, getAzureAuthorizeUrl } from "./providers/azure";
 import {
   getClickUpAccessToken,
   getClickUpAuthorizeUrl,
@@ -263,6 +264,17 @@ export async function generateAuthURL({
 
     return url;
   }
+
+  if (params.includes("integration/azure")) {
+    const url = getAzureAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      ...props,
+    });
+
+    return url;
+  }
 }
 
 export async function generateTokens({
@@ -484,6 +496,18 @@ export async function generateTokens({
       code,
       callback,
       code_verifier,
+    });
+
+    return tokens;
+  }
+
+  if (params.includes("integration/azure")) {
+    const tokens = await getAzureAccessToken({
+      base_url,
+      client_id,
+      client_secret,
+      code,
+      callback,
     });
 
     return tokens;
