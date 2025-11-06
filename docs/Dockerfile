@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm i --force
 RUN npm install @napi-rs/simple-git-linux-x64-musl
-RUN npm install @rollup/rollup-linux-x64-musl
+
 # Stage 2: Build the application
 FROM base AS builder
 WORKDIR /app
