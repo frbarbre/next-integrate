@@ -204,7 +204,13 @@ export async function exchange({
   code: string;
   cookieStore: Promise<ReadonlyRequestCookies>;
   debug?: boolean;
-}): Promise<Tokens | undefined> {
+}): Promise<
+  | {
+      tokens: Tokens;
+      clientCallbackQueryParams: string | null;
+    }
+  | undefined
+> {
   if (!options) return;
 
   if (debug) {
@@ -215,8 +221,6 @@ export async function exchange({
   if (debug) {
     console.log("Code verifier", code_verifier);
   }
-
-  console.log("Exchanging important tokens");
 
   const tokens = await generateTokens({
     ...options,
@@ -229,6 +233,8 @@ export async function exchange({
     console.log("Tokens", tokens);
   }
 
+  const name = (await cookieStore).get("name")?.value;
+
   (await cookieStore).delete("name");
   (await cookieStore).delete("redirect");
   (await cookieStore).delete("code_verifier");
@@ -237,7 +243,14 @@ export async function exchange({
     console.log("Cleared cookies");
   }
 
-  return tokens;
+  const qp = `?name=${name}&provider=${options.params
+    .split("/")
+    .pop()}&status=success`;
+
+  return {
+    tokens,
+    clientCallbackQueryParams: qp,
+  };
 }
 
 export async function clearCookies({
