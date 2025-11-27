@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "watch": "tsup --watch"
+    "watch": "nodemon"
   },
   "keywords": [
     "auth",
@@ -29,9 +29,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.14.11",
+    "next": "^15.3.5",
+    "nodemon": "^3.1.11",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5",
-    "next": "^15.3.5"
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
     "next": ">=13"
