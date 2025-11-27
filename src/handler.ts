@@ -210,12 +210,13 @@ export async function exchange({
   if (debug) {
     console.log("Options", options);
   }
-
   const code_verifier = (await cookieStore).get("code_verifier")?.value;
 
   if (debug) {
     console.log("Code verifier", code_verifier);
   }
+
+  console.log("Exchanging important tokens");
 
   const tokens = await generateTokens({
     ...options,
