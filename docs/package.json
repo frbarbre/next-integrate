@@ -4,7 +4,7 @@
   "description": "Nextra docs template",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,mdx}'"
   },
@@ -30,7 +30,7 @@
     "cookie": "^0.6.0",
     "embla-carousel-react": "^8.1.7",
     "lucide-react": "^0.414.0",
-    "next": "15.5.6",
+    "next": "16.0.8",
     "next-integrate": "^0.2.22",
     "next-themes": "^0.3.0",
     "nextra": "^2.0.0",
