@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/hosting-poc-backstage
+  IMAGE_NAME: ${{ github.repository }}/docs
 
 jobs:
   build-and-push:
@@ -46,23 +46,23 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            # Standard tags (keep these for manual use/debugging)
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=${{ steps.version.outputs.version }}
-            type=raw,value={{branch}}-{{sha}}
-            type=raw,value={{date 'YYYYMMDD-HHmmss'}}-{{sha}}
-            type=raw,value=latest-{{sha}}
-            type=raw,value=gitops-{{sha}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+            # --- FLUX SPECIFIC TAG ---
+            # Creates: prod-20251225-143000-d644976
+            # This is purely for Flux to sort chronologically (Alphabetical Order = Time Order)
+            type=raw,value=prod-{{date 'YYYYMMDD-HHmmss'}}-{{sha}},enable={{is_default_branch}}
 
       - name: Display generated tags
         run: |
           echo "Generated Docker tags:"
           echo "${{ steps.meta.outputs.tags }}" | tr ',' '\n' | sed 's/^/  - /'
-          echo ""
-          echo "Primary version tag: ${{ steps.version.outputs.version }}"
-          echo "GitOps-friendly tag: gitops-${{ github.sha }}"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
