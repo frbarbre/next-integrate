@@ -20,7 +20,8 @@ export type Provider =
   | "click-up"
   | "linkedin"
   | "reddit"
-  | "azure";
+  | "azure"
+  | "tesla";
 
 export type Auth = {
   base_url: string;

@@ -60,6 +60,10 @@ import {
   getTrustpilotAccessToken,
   getTrustpilotAuthorizeUrl,
 } from "./providers/trustpilot";
+import {
+  getTeslaAccessToken,
+  getTeslaAuthorizeUrl,
+} from "./providers/tesla";
 import { Tokens } from "./types";
 
 export async function generateAuthURL({
@@ -267,6 +271,17 @@ export async function generateAuthURL({
 
   if (params.includes("integration/azure")) {
     const url = getAzureAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      ...props,
+    });
+
+    return url;
+  }
+
+  if (params.includes("integration/tesla")) {
+    const url = getTeslaAuthorizeUrl({
       client_id,
       scope,
       base_url,
@@ -503,6 +518,18 @@ export async function generateTokens({
 
   if (params.includes("integration/azure")) {
     const tokens = await getAzureAccessToken({
+      base_url,
+      client_id,
+      client_secret,
+      code,
+      callback,
+    });
+
+    return tokens;
+  }
+
+  if (params.includes("integration/tesla")) {
+    const tokens = await getTeslaAccessToken({
       base_url,
       client_id,
       client_secret,
