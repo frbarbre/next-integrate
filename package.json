@@ -28,11 +28,11 @@
   "author": "Frederik Barbre",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.14.11",
-    "next": "^16.0.8",
-    "nodemon": "^3.1.11",
+    "@types/node": "^25.5.2",
+    "next": "^16.2.3",
+    "nodemon": "^3.1.14",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.2"
   },
   "peerDependencies": {
     "next": ">=13"

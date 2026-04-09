@@ -1,10 +1,14 @@
 {
-  "watch": ["src"],
+  "watch": [
+    "src"
+  ],
   "ext": "ts",
-  "ignore": ["src/**/*.test.ts", "src/**/*.spec.ts", "node_modules", "dist"],
+  "ignore": [
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "node_modules",
+    "dist"
+  ],
   "exec": "npm run build",
   "delay": 500
 }
-
-
-
