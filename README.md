@@ -34,6 +34,7 @@ Next Integrate is a flexible and customizable npm library designed to simplify t
 - [Trustpilot](https://next-integrate.frederikbarbre.dk/docs/providers/trustpilot)
 - [Azure](https://next-integrate.frederikbarbre.dk/docs/providers/azure)
 - [Reddit](https://next-integrate.frederikbarbre.dk/docs/providers/reddit)
+- [Tesla](https://next-integrate.frederikbarbre.dk/docs/providers/tesla)
 - [Shopify](https://next-integrate.frederikbarbre.dk/docs/providers/shopify)
 - And more to come...
 

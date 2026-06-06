@@ -85,6 +85,11 @@ export const providers = [
     invert: false,
   },
   {
+    name: 'Tesla',
+    path: 'tesla.svg',
+    invert: false,
+  },
+  {
     name: 'Shopify',
     path: 'shopify.svg',
     invert: false,
