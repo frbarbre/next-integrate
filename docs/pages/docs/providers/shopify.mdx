@@ -108,7 +108,7 @@ The normalized shop domain is included in the tokens passed to your `callback`, 
 
 ## Usage
 
-To use the your new integration, you can use the `<Integrate />` component found in the [Getting Started Guide]("docs/getting-started#create-an-integrate-components"). The `shop` prop is required when the provider is `shopify`, and is type-checked by the `integrate()` function.
+To use the your new integration, you can use the `<Integrate />` component found in the [Getting Started Guide]("docs/getting-started#create-an-integrate-components"). The `shop` prop is required when the provider is `shopify`, which is enforced by the `IntegrateProps` type.
 
 ```tsx copy {1, 6-12}
 import Integrate from '@/components/integrate';

@@ -24,14 +24,16 @@ export type Provider =
   | "tesla"
   | "shopify";
 
-export type IntegrateOptions = {
+export type IntegrateProps = {
   name: string;
-  redirect: string;
+  redirect?: string;
   base_path?: string;
 } & (
-    | { provider: "shopify"; shop: string }
-    | { provider: Exclude<Provider, "shopify">; shop?: never }
-  );
+  | { provider: "shopify"; shop: string }
+  | { provider: Exclude<Provider, "shopify">; shop?: never }
+);
+
+export type IntegrateOptions = IntegrateProps & { redirect: string };
 
 export type Auth = {
   base_url: string;

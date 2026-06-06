@@ -154,28 +154,21 @@ export const { auth } = NextIntegrate({
 Create an `Integrate` component in a new `components/integrate.tsx` file:
 
 ```tsx
-import { integrate, Provider } from "next-integrate";
+import { integrate, IntegrateProps } from "next-integrate";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnchorHTMLAttributes } from "react";
 
-export default function Integrate({
-  provider,
-  name,
-  shop, // required for the shopify provider
-  children,
-  redirect,
-  className,
-  ...props
-}) {
+export default function Integrate(
+  props: IntegrateProps & AnchorHTMLAttributes<HTMLAnchorElement>,
+) {
+  const { provider, name, shop, redirect, base_path, children, className, ...anchorProps } = props;
   const pathname = usePathname();
 
-  const integration =
-    provider === "shopify"
-      ? integrate({ name, provider, shop, redirect: redirect || pathname })
-      : integrate({ name, provider, redirect: redirect || pathname });
+  const integration = integrate({ ...props, redirect: redirect || pathname });
 
   return (
-    <Link href={integration} className={className} {...props}>
+    <Link href={integration} className={className} {...anchorProps}>
       {children}
     </Link>
   );
