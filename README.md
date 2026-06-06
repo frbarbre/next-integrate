@@ -32,6 +32,9 @@ Next Integrate is a flexible and customizable npm library designed to simplify t
 - [ClickUp](https://next-integrate.frederikbarbre.dk/docs/providers/click-up)
 - [Accuranker](https://next-integrate.frederikbarbre.dk/docs/providers/accuranker)
 - [Trustpilot](https://next-integrate.frederikbarbre.dk/docs/providers/trustpilot)
+- [Azure](https://next-integrate.frederikbarbre.dk/docs/providers/azure)
+- [Reddit](https://next-integrate.frederikbarbre.dk/docs/providers/reddit)
+- [Shopify](https://next-integrate.frederikbarbre.dk/docs/providers/shopify)
 - And more to come...
 
 ## Installation
@@ -157,6 +160,7 @@ import { usePathname } from "next/navigation";
 export default function Integrate({
   provider,
   name,
+  shop, // required for the shopify provider
   children,
   redirect,
   className,
@@ -164,11 +168,10 @@ export default function Integrate({
 }) {
   const pathname = usePathname();
 
-  const integration = integrate({
-    name,
-    provider,
-    redirect: redirect || pathname,
-  });
+  const integration =
+    provider === "shopify"
+      ? integrate({ name, provider, shop, redirect: redirect || pathname })
+      : integrate({ name, provider, redirect: redirect || pathname });
 
   return (
     <Link href={integration} className={className} {...props}>

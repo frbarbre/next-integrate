@@ -203,26 +203,29 @@ Create a new folder in the root of your project called `components`, and create 
   export default function Integrate({
     provider, // The provider defined in the auth.ts file
     name, // The name of the integration defined in the auth.ts file
+    shop, // The merchant's shop domain, required for the shopify provider
     children, // The children of the component
     redirect, // Optional, the URL to redirect to after the integration
     className, // Optional, the class name of the component
     ...props // The rest of the props
   }: {
-    provider: Provider;
     name: string;
     children?: React.ReactNode;
     redirect?: string;
     className?: string;
-  } & AnchorHTMLAttributes<HTMLAnchorElement>) {
+  } & (
+    | { provider: "shopify"; shop: string }
+    | { provider: Exclude<Provider, "shopify">; shop?: never }
+  ) &
+    AnchorHTMLAttributes<HTMLAnchorElement>) {
     const pathname = usePathname(); // The current URL, to redirect back to after the integration
   
     // This function generates the integration URL, which is used in the Link component
-    const integration = integrate({
-      name,
-      provider,
-      redirect: redirect || pathname,
-      // base_path: "/something", The path to the integration route if it's different from the default: (api/auth/[...integration]/route.ts)
-    });
+    // You can also pass base_path: "/something", if the integration route is different from the default: (api/auth/[...integration]/route.ts)
+    const integration =
+      provider === "shopify"
+        ? integrate({ name, provider, shop, redirect: redirect || pathname })
+        : integrate({ name, provider, redirect: redirect || pathname });
     
     return (
       <Link href={integration} className={className} {...props}>
@@ -242,26 +245,29 @@ Create a new folder in the root of your project called `components`, and create 
   export default function Integrate({
     provider, // The provider defined in the auth.ts file
     name, // The name of the integration defined in the auth.ts file
+    shop, // The merchant's shop domain, required for the shopify provider
     children, // The children of the component
     redirect, // Optional, the URL to redirect to after the integration
     className, // Optional, the class name of the component
     ...props // The rest of the props
   }: {
-    provider: Provider;
     name: string;
     children?: React.ReactNode;
     redirect?: string;
     className?: string;
-  } & AnchorHTMLAttributes<HTMLAnchorElement>) {
+  } & (
+    | { provider: "shopify"; shop: string }
+    | { provider: Exclude<Provider, "shopify">; shop?: never }
+  ) &
+    AnchorHTMLAttributes<HTMLAnchorElement>) {
     const { asPath } = useRouter(); // The current URL, to redirect back to after the integration
   
     // This function generates the integration URL, which is used in the Link component
-    const integration = integrate({
-      name,
-      provider,
-      redirect: redirect || asPath,
-      // base_path: "/something", The path to the integration route if it's different from the default: (api/auth/[...integration]/route.ts)
-    });
+    // You can also pass base_path: "/something", if the integration route is different from the default: (api/auth/[...integration]/route.ts)
+    const integration =
+      provider === "shopify"
+        ? integrate({ name, provider, shop, redirect: redirect || asPath })
+        : integrate({ name, provider, redirect: redirect || asPath });
     
     return (
       <Link href={integration} className={className} {...props}>

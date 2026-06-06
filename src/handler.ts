@@ -80,10 +80,12 @@ export async function handler({
 
   const newName = req.nextUrl.searchParams.get("name");
   const newRedirect = req.nextUrl.searchParams.get("redirect");
+  const newShop = req.nextUrl.searchParams.get("shop");
 
   if (debug) {
     console.log("Name", newName);
     console.log("Redirect", newRedirect);
+    console.log("Shop", newShop);
   }
 
   if (!code) {
@@ -92,11 +94,13 @@ export async function handler({
     }
     (await cookieStore).set("name", newName || "");
     (await cookieStore).set("redirect", newRedirect || "");
+    (await cookieStore).set("shop", newShop || "");
     (await cookieStore).set("code_verifier", code_verifier);
   }
 
   const name = (await cookieStore).get("name")?.value;
   const redirect = (await cookieStore).get("redirect")?.value;
+  const shop = (await cookieStore).get("shop")?.value;
 
   if (debug) {
     console.log("Getting newly set cookies");
@@ -148,6 +152,7 @@ export async function handler({
 
   const options = {
     ...integration.options,
+    ...(shop && { shop }),
     client_id: provider.client_id,
     client_secret: provider.client_secret,
     code_challenge,
@@ -237,6 +242,7 @@ export async function exchange({
 
   (await cookieStore).delete("name");
   (await cookieStore).delete("redirect");
+  (await cookieStore).delete("shop");
   (await cookieStore).delete("code_verifier");
 
   if (debug) {
@@ -260,5 +266,6 @@ export async function clearCookies({
 }) {
   (await cookieStore).delete("name");
   (await cookieStore).delete("redirect");
+  (await cookieStore).delete("shop");
   (await cookieStore).delete("code_verifier");
 }

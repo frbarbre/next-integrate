@@ -84,4 +84,9 @@ export const providers = [
     path: 'reddit.svg',
     invert: false,
   },
+  {
+    name: 'Shopify',
+    path: 'shopify.svg',
+    invert: false,
+  },
 ];

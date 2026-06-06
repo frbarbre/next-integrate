@@ -64,6 +64,10 @@ import {
   getTeslaAccessToken,
   getTeslaAuthorizeUrl,
 } from "./providers/tesla";
+import {
+  getShopifyAccessToken,
+  getShopifyAuthorizeUrl,
+} from "./providers/shopify";
 import { Tokens } from "./types";
 
 export async function generateAuthURL({
@@ -290,6 +294,24 @@ export async function generateAuthURL({
 
     return url;
   }
+
+  if (params.includes("integration/shopify")) {
+    const { shop, ...rest } = props;
+
+    if (!shop) {
+      throw new Error("shop is required for the shopify provider");
+    }
+
+    const url = getShopifyAuthorizeUrl({
+      client_id,
+      scope,
+      base_url,
+      shop,
+      ...rest,
+    });
+
+    return url;
+  }
 }
 
 export async function generateTokens({
@@ -300,6 +322,7 @@ export async function generateTokens({
   client_secret,
   callback,
   code_verifier,
+  shop,
 }: {
   code: string;
   params: string;
@@ -308,6 +331,7 @@ export async function generateTokens({
   client_secret: string | undefined;
   callback: (tokens: Tokens) => void;
   code_verifier: string | undefined;
+  shop?: string;
 }) {
   if (!base_url) {
     throw new Error("base_url is required");
@@ -534,6 +558,22 @@ export async function generateTokens({
       client_id,
       client_secret,
       code,
+      callback,
+    });
+
+    return tokens;
+  }
+
+  if (params.includes("integration/shopify")) {
+    if (!shop) {
+      throw new Error("shop is required for the shopify provider");
+    }
+
+    const tokens = await getShopifyAccessToken({
+      client_id,
+      client_secret,
+      code,
+      shop,
       callback,
     });
 

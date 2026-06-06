@@ -21,7 +21,17 @@ export type Provider =
   | "linkedin"
   | "reddit"
   | "azure"
-  | "tesla";
+  | "tesla"
+  | "shopify";
+
+export type IntegrateOptions = {
+  name: string;
+  redirect: string;
+  base_path?: string;
+} & (
+    | { provider: "shopify"; shop: string }
+    | { provider: Exclude<Provider, "shopify">; shop?: never }
+  );
 
 export type Auth = {
   base_url: string;
